@@ -31,8 +31,22 @@ def safe_get_price(url):
 
 def get_btc():
     try:
-        return float(requests.get(BINANCE_BTC).json()["price"])
-    except:
+        res = requests.get(
+            "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT",
+            timeout=5
+        )
+        data = res.json()
+
+        st.write("BTC RAW:", data)  # 👈 DEBUG
+
+        if "price" in data:
+            return float(data["price"])
+        else:
+            st.error(f"BTC API ERROR: {data}")
+            return None
+
+    except Exception as e:
+        st.error(f"BTC REQUEST FAILED: {e}")
         return None
 
 def get_gold():
