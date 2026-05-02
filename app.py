@@ -31,19 +31,13 @@ def safe_get_price(url):
 
 def get_btc():
     try:
-        res = requests.get(
-            "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT",
-            timeout=5
-        )
-        data = res.json()
-
-        st.write("BTC RAW:", data)  # 👈 DEBUG
-
-        if "price" in data:
-            return float(data["price"])
-        else:
-            st.error(f"BTC API ERROR: {data}")
-            return None
+        import yfinance as yf
+        btc = yf.Ticker("BTC-USD")
+        data = btc.history(period="1d", interval="1m")
+        return float(data["Close"].iloc[-1])
+    except Exception as e:
+        st.error(f"BTC ERROR: {e}")
+        return None
 
     except Exception as e:
         st.error(f"BTC REQUEST FAILED: {e}")
