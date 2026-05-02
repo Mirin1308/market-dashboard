@@ -3,11 +3,36 @@ from streamlit_autorefresh import st_autorefresh
 import yfinance as yf
 import requests
 from datetime import datetime
-
-st.set_page_config(page_title="Market Dashboard", layout="wide")
-
+now = datetime.now()
 # ✅ auto refresh
 st_autorefresh(interval=5000, key="refresh")
+
+if btc:
+    st.session_state.btc_data.append({"time": now, "price": btc})
+
+if gold:
+    st.session_state.gold_data.append({"time": now, "price": gold})
+
+if sp500:
+    st.session_state.sp500_data.append({"time": now, "price": sp500})
+    
+st.set_page_config(page_title="Market Dashboard", layout="wide")
+
+MAX_POINTS = 100
+
+st.session_state.btc_data = st.session_state.btc_data[-MAX_POINTS:]
+st.session_state.gold_data = st.session_state.gold_data[-MAX_POINTS:]
+st.session_state.sp500_data = st.session_state.sp500_data[-MAX_POINTS:]
+
+#take time series
+if "btc_data" not in st.session_state:
+    st.session_state.btc_data = []
+
+if "gold_data" not in st.session_state:
+    st.session_state.gold_data = []
+
+if "sp500_data" not in st.session_state:
+    st.session_state.sp500_data = []
 
 st.title("📊 Market Dashboard (BTC | Gold | S&P 500)")
 
